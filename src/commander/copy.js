@@ -11,10 +11,57 @@ const copy = ({ source, destination }, options = {}) => {
     const sources = wrapSources.map((source) => glob.sync(source) || []);
     sources.forEach((subsources) => {
       subsources.forEach((source) => {
-        fs.copySync(source, join(destination, basename(source)));
-        logger
-          .setType(logType)
-          .info(`success: copy '${source}' to '${destination}'`);
+        const dis = join(destination, basename(source));
+        fs.copySync(source, dis, {
+          preserveTimestamps: true,
+          filter: (src, dest) => {
+            const sStat = fs.statSync(src);
+            const isExist = fs.existsSync(dest);
+            let flag = false;
+            if (!isExist) {
+              flag = true;
+            } else {
+              const dStat = fs.statSync(dest);
+              if (
+                sStat.isFile() &&
+                parseInt(sStat.mtimeMs, 10) === parseInt(dStat.mtimeMs, 10)
+              ) {
+                flag = false;
+              } else {
+                flag = true;
+              }
+            }
+            if (sStat.isDirectory()) {
+              return true;
+            }
+            if (!flag) {
+              logger.setType(logType).info(`info: '${dest}' is not modify`);
+            } else {
+              logger
+                .setType(logType)
+                .info(`success: copy '${src}' to '${dest}'`);
+            }
+            return flag;
+          },
+        });
+        // logger.setType(logType).info(`success: copy '${source}' to '${dis}'`);
+        // const sStat = fs.statSync(source);
+        // const isExist = fs.existsSync(dis);
+        // if (!isExist) {
+        //   fs.copySync(source, dis, { preserveTimestamps: true });
+        //   logger.setType(logType).info(`success: copy '${source}' to '${dis}'`);
+        // } else {
+        //   const dStat = fs.statSync(dis);
+        //   if (sStat.isFile() && sStat.mtimeMs === dStat.mtimeMs) {
+        //     console.log(sStat.mtimeMs === dStat.mtimeMs);
+        //     logger.setType(logType).info(`success: '${dis}' is not modify`);
+        //   } else {
+        //     fs.copySync(source, dis, { preserveTimestamps: true });
+        //     logger
+        //       .setType(logType)
+        //       .info(`success: copy '${source}' to '${dis}'`);
+        //   }
+        // }
       });
     });
   } catch (e) {

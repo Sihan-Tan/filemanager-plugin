@@ -1,14 +1,14 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { resolve } = require('path');
-const FileManagerPlugin = require('../../lib').WebpackFilemanager;
-const Webpack = require('webpack');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { resolve } = require("path");
+const FileManagerPlugin = require("../../lib").WebpackFilemanager;
+const Webpack = require("webpack");
 
 const config = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   output: {
-    publicPath: '/',
-    path: resolve(__dirname, 'dist'),
-    filename: '[name].[hash:5].js'
+    publicPath: "/",
+    path: resolve(__dirname, "dist"),
+    filename: "[name].[hash:5].js",
   },
   module: {
     rules: [
@@ -16,21 +16,21 @@ const config = {
         test: /\.js$/,
         use: [
           {
-            loader: 'babel-loader',
+            loader: "babel-loader",
             options: {
-              presets: ['@babel/preset-env']
-            }
-          }
+              presets: ["@babel/preset-env"],
+            },
+          },
         ],
-        exclude: /node_modules/
-      }
-    ]
+        exclude: /node_modules/,
+      },
+    ],
   },
   plugins: [
     new Webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: './src/index.html'
+      filename: "index.html",
+      template: "./src/index.html",
     }),
     new FileManagerPlugin({
       // events: {
@@ -97,29 +97,29 @@ const config = {
       // },
       customHooks: [
         {
-          hookType: 'tapAsync',
-          hookName: 'beforeRun',
+          hookType: "tapAsync",
+          hookName: "beforeRun",
           commands: {
-            del: {
-              items: ['./dist']
-            }
-          }
+            // del: {
+            //   items: ['./dist']
+            // }
+          },
         },
         {
-          hookName: 'afterEmit',
-          hookType: 'tapAsync', // reference to webpack. tap | tapAsync | tapPromise
+          hookName: "afterEmit",
+          hookType: "tapAsync", // reference to webpack. tap | tapAsync | tapPromise
           commands: {
             copy: {
               items: [
                 {
-                  source: './copy/a',
-                  destination: './dist/copy'
+                  source: "./copy/a",
+                  destination: "./dist/copy",
                 },
                 {
-                  source: ['./copy/**/*.html', './copy/c'],
-                  destination: './dist/copy/'
-                }
-              ]
+                  source: ["./copy/**/*.html", "./copy/c"],
+                  destination: "./dist/copy/",
+                },
+              ],
             },
             // rename: {
             //   items: [
@@ -133,24 +133,24 @@ const config = {
             //     }
             //   ]
             // },
-            zip: {
-              items: [
-                {
-                  source: './zip/a',
-                  destination: './dist/zip/a.zip'
-                },
-                {
-                  source: './zip/c/index.html',
-                  destination: './dist/zip/c.index.html.tgz',
-                  type: 'tgz'
-                },
-                {
-                  source: './zip/b/index.html',
-                  destination: './dist/zip/b.html.gz',
-                  type: 'gzip',
-                }
-              ]
-            },
+            // zip: {
+            //   items: [
+            //     {
+            //       source: './zip/a',
+            //       destination: './dist/zip/a.zip'
+            //     },
+            //     {
+            //       source: './zip/c/index.html',
+            //       destination: './dist/zip/c.index.html.tgz',
+            //       type: 'tgz'
+            //     },
+            //     {
+            //       source: './zip/b/index.html',
+            //       destination: './dist/zip/b.html.gz',
+            //       type: 'gzip',
+            //     }
+            //   ]
+            // },
             //   options: {
             //     buildStart: () => {},
             //     buildEnd: () => {}
@@ -158,22 +158,22 @@ const config = {
             // },
             unzip: {
               items: [
-                {
-                  source: './unzip/**/*.zip',
-                  destination: './dist/unzip/',
-                  type: 'zip'
-                }
+                // {
+                //   source: './unzip/**/*.zip',
+                //   destination: './dist/unzip/',
+                //   type: 'zip'
+                // }
                 // { source: './unzip/b.tgz', destination: './dist/unzip/b', type: 'tgz', options: {}},
                 // { source: './unzip/c.zip', destination: './dist/unzip/c', options: {}},
                 // { source: './unzip/d.gz', destination: './dist/unzip/d.html', type: 'gzip', options: {}}
-              ]
+              ],
               // options: {
               //   buildStart: () => {},
               //   buildEnd: () => {}
               // }
-            }
-          }
-        }
+            },
+          },
+        },
       ],
       // pluginLibraries: [
       //   {
@@ -186,19 +186,19 @@ const config = {
       // }
       // ],
       options: {
-        parallel: 4
+        parallel: 4,
         // log: 'error', // error || all
-      }
-    })
+      },
+    }),
   ],
   devServer: {
     port: 9000,
-    host: 'localhost',
+    host: "localhost",
     open: true,
     hot: true,
     inline: true,
-    progress: true
-  }
+    progress: true,
+  },
 };
 
 module.exports = config;
